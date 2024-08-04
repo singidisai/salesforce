@@ -1,0 +1,32 @@
+public class AccountInsertion {
+    Public static void createclientOpportunity(List<Account> accList){
+        List<Opportunity> opList = new List<Opportunity>();
+        for(Account acc:accList){
+            Opportunity op = new Opportunity();
+            op.AccountId = acc.id;
+            op.Name = acc.Name;
+            op.StageName = 'Prospecting';
+            op.CloseDate = System.today();
+            opList.add(op);
+        }
+        if(!opList.isEmpty()){
+            Insert opList;
+        }
+        Map<Id,Id> mapoftheopportunityId = new Map<Id,Id>();
+        for(Opportunity op:opList){
+            mapoftheopportunityId.put(op.AccountId,op.Id);
+        }
+        List<Account> updateAccount = new List<Account>();
+        for(Account acc:[SELECT Id,Clientopportunity__c FROM Account WHERE Id IN:mapoftheopportunityId.KeySet()]){
+            if(mapoftheopportunityId.containsKey(acc.id)){
+                acc.Clientopportunity__c = mapoftheopportunityId.get(acc.Id);
+                updateAccount.add(acc);
+            }
+        }
+        if(!updateAccount.isEmpty()){
+            update updateAccount;
+        }
+        
+    }
+
+}
